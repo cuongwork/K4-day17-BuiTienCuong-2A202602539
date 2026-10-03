@@ -35,7 +35,7 @@ Sau khi hoàn thành, các bạn cần có khả năng:
 ├── data/            # dữ liệu benchmark dùng chung
 │   ├── conversations.json
 │   └── advanced_long_context.json
-└── src/             # bản scaffold dành cho sinh viên (pseudocode + TODO)
+└── src/             # mã nguồn agent, benchmark và kiểm thử
     ├── model_provider.py
     ├── config.py
     ├── memory_store.py
@@ -72,7 +72,7 @@ message người dùng
   → sinh câu trả lời → cập nhật bộ đếm token
 ```
 
-Baseline Agent chỉ giữ danh sách message theo `thread_id`. Sang thread mới, nó **phải quên** toàn bộ fact cũ.
+Baseline Agent chỉ giữ danh sách message theo cặp `user_id`, `thread_id`. Sang thread mới, nó **phải quên** toàn bộ fact cũ.
 
 Cả hai agent nên có **chế độ offline** cho ra kết quả lặp lại được, để benchmark và test chạy được mà không cần API key. Chế độ live (LangChain/LangGraph) là phần mở rộng.
 
@@ -151,19 +151,30 @@ LLM_MODEL=gpt-4o-mini
 OPENAI_API_KEY=...
 ```
 
+### Quy ước cấu hình của scaffold này
+
+`load_config()` đọc `.env` tại root repo; biến môi trường của tiến trình được ưu tiên nếu trùng tên. Mặc định là `LLM_PROVIDER=openai`, `LLM_MODEL=gpt-4o-mini`, `LLM_TEMPERATURE=0`, `COMPACT_THRESHOLD_TOKENS=1200`, `COMPACT_KEEP_MESSAGES=4`. `JUDGE_PROVIDER`, `JUDGE_MODEL`, `JUDGE_TEMPERATURE` mặc định theo model chính. Có thể đặt riêng `LLM_API_KEY`, `LLM_BASE_URL`, `JUDGE_API_KEY`, `JUDGE_BASE_URL` để ghi đè thông tin kết nối.
+
+Các khóa provider tương ứng là `OPENAI_API_KEY`, `CUSTOM_API_KEY` và `CUSTOM_BASE_URL`, `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `OLLAMA_BASE_URL`, `OPENROUTER_API_KEY`. Không cần khóa API để nạp cấu hình hoặc chạy chế độ offline. Chế độ live cần package provider tương ứng và khóa/endpoint hợp lệ.
+
 ## Chạy benchmark và test
 
 Sau khi hoàn thiện `src/`, chạy từ root repo:
 
 ```bash
 python src/benchmark.py
+python src/eval_bonus.py
 ```
 
 ```bash
-pytest src/test_agents.py -v
+python -m pytest -q
 ```
 
 Benchmark cần in ra hai bảng: **Standard Benchmark** và **Long-Context Stress Benchmark**. Mỗi bảng so sánh Baseline với Advanced theo đủ 6 cột trong phần "Chỉ số benchmark cần hiểu".
+
+Benchmark mặc định chạy offline trên state tạm riêng cho từng agent và từng bộ dữ liệu, nên chạy lại không dùng hồ sơ từ lần trước. `Cross-session recall` chấm 0 khi không khớp fact nào, 0,5 khi khớp một phần, và 1 khi khớp toàn bộ. `Response quality` là heuristic offline độc lập với đáp án recall: 50% trả lời trực tiếp, 25% ngắn gọn, 25% có cấu trúc. Các cột token cộng cả lượt hội thoại và câu hỏi recall. Xem `Analysis.md` để biết kết quả và giới hạn của chỉ số này.
+
+Bonus bước 9: Advanced dùng confidence threshold mặc định `0.8` trước khi lưu fact vào `User.md`. Có thể đổi khi khởi tạo, ví dụ `AdvancedAgent(config, force_offline=True, profile_confidence_threshold=0.9)`. Điểm tin cậy hiện là heuristic dựa trên lời khẳng định so với câu giả định. `python src/eval_bonus.py` so sánh ngưỡng này với chế độ không lọc trên dữ liệu đối kháng; xem `Analysis.md` để biết tác dụng và giới hạn.
 
 ## Cách dùng repo này
 
@@ -180,5 +191,6 @@ Nếu các bạn là giảng viên hoặc reviewer:
 
 - `Guide.md`: hướng dẫn từng bước để hoàn thành lab
 - `Rubric.md`: tiêu chí chấm điểm và bonus
+- `Analysis.md`: kết quả benchmark và phân tích trade-off của bước 8
 
 Track này được thiết kế để các bạn không chỉ “dùng agent”, mà còn bắt đầu nghĩ như một người thiết kế **memory system** cho agent production.

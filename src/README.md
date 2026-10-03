@@ -1,19 +1,11 @@
-# Student Scaffold
+# Mã nguồn Day 17
 
-This `src/` folder is the student version of the lab.
+Thư mục này chứa cấu hình, lớp memory, hai agent, benchmark, thí nghiệm bonus và kiểm thử. Chạy các lệnh sau từ root repo:
 
-- It keeps the same high-level structure
-- The Python files are intentionally incomplete and contain pseudocode / TODOs
-- The benchmark structure should include: standard benchmark + long-context stress benchmark
-- The runtime should support these providers: `openai`, `custom`, `gemini`, `anthropic`, `ollama`, `openrouter`
+```bash
+python -m pytest -q
+python src/benchmark.py
+python src/eval_bonus.py
+```
 
-Suggested flow:
-
-1. Start with `config.py`
-2. Implement `memory_store.py`
-3. Finish `agent_baseline.py`
-4. Finish `agent_advanced.py`
-5. Implement `benchmark.py`
-6. Make `test_agents.py` pass
-
-Datasets are available at the repo root in `data/`.
+Các lệnh trên chạy offline, không cần API key. `README.md` ở root mô tả cấu hình provider và `Analysis.md` ghi kết quả đo cùng giới hạn.

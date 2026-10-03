@@ -1,0 +1,31 @@
+[
+  {
+    "id": "hypothetical-career-and-location",
+    "user_id": "bonus_lan",
+    "turns": [
+      "Mình tên là Lan. Mình ở Huế và đang làm MLOps engineer.",
+      "Nếu mình ở Hà Nội thì đi lại sẽ tiện hơn.",
+      "Mình có thể chuyển sang product manager.",
+      "Anh ấy nói mình ở Đà Nẵng."
+    ],
+    "expected_facts": {
+      "name": "Lan",
+      "location": "Huế",
+      "profession": "MLOps engineer"
+    }
+  },
+  {
+    "id": "correction-followed-by-hypothesis",
+    "user_id": "bonus_minh",
+    "turns": [
+      "Mình ở Đà Nẵng và đang làm backend engineer.",
+      "Mình đính chính: hiện ở Huế. Giờ chuyển sang MLOps engineer.",
+      "Mình ở Huế, nhưng có thể tháng sau chuyển đi.",
+      "Mình có thể chuyển sang data analyst."
+    ],
+    "expected_facts": {
+      "location": "Huế",
+      "profession": "MLOps engineer"
+    }
+  }
+]
