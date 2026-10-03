@@ -191,6 +191,7 @@ Nếu các bạn là giảng viên hoặc reviewer:
 
 - `Guide.md`: hướng dẫn từng bước để hoàn thành lab
 - `Rubric.md`: tiêu chí chấm điểm và bonus
-- `Analysis.md`: kết quả benchmark và phân tích trade-off của bước 8
+- `STEP8.md`: câu trả lời trực tiếp cho bốn câu hỏi của bước 8
+- `Analysis.md`: kết quả benchmark, bonus và giới hạn đo lường chi tiết
 
 Track này được thiết kế để các bạn không chỉ “dùng agent”, mà còn bắt đầu nghĩ như một người thiết kế **memory system** cho agent production.
